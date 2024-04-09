@@ -25,6 +25,23 @@ function permission () {
         return;
 
     }
+
+    navigator.permissions.query({name:'gyroscope'}).then(function(result) {   
+        let gyroscope = new Gyroscope({ frequency: 60 });
+    
+    gyroscope.addEventListener("reading", (e) => {
+      console.log(`Angular velocity along the X-axis ${gyroscope.x}`);
+      console.log(`Angular velocity along the Y-axis ${gyroscope.y}`);
+      console.log(`Angular velocity along the Z-axis ${gyroscope.z}`);
+    
+      document.getElementById("gyro").innerText = `x: ${gyroscope.x}\ny: ${gyroscope.y}\nz:${gyroscope.z}`
+    
+    });
+    
+    gyroscope.start();
+    console.log(result.state);
+    
+    })
 }
 
 function removeBtnPermission(){
@@ -41,7 +58,15 @@ function handleOrientation(event) {
     const beta = Math.round(Number(event.beta));
     const gamma = Math.round(Number(event.gamma));
     
-    
+
+    try{
+
+        document.getElementById("log").innerText = `log 
+        webkitCompassAccuracy ${ event.webkitCompassAccuracy }, webkitCompassHeading ${webkitCompassHeading}, abs ${absolute}
+        `
+    }catch(e){
+        document.getElementById("log").innerText = `log nope ${absolute}` 
+    }
 
     setTimeout(() => {
         displayData.innerHTML = getInnerHTML(alpha, beta, gamma);
@@ -92,15 +117,4 @@ function getInnerHTML(alpha, beta, gamma){
 // update del
 
 
-let gyroscope = new Gyroscope({ frequency: 60 });
 
-gyroscope.addEventListener("reading", (e) => {
-  console.log(`Angular velocity along the X-axis ${gyroscope.x}`);
-  console.log(`Angular velocity along the Y-axis ${gyroscope.y}`);
-  console.log(`Angular velocity along the Z-axis ${gyroscope.z}`);
-
-  document.getElementById("gyro").innerText = `x: ${gyroscope.x}\ny: ${gyroscope.y}\nz:${gyroscope.z}`
-
-});
-
-gyroscope.start();
