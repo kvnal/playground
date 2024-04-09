@@ -37,15 +37,15 @@ function permissionDenied(){
 
 function handleOrientation(event) {
     const absolute = event.absolute;
-    const alpha = Number(event.alpha).toFixed(2);
-    const beta = Number(event.beta).toFixed(2);
-    const gamma = Number(event.gamma).toFixed(2);
+    const alpha = Math.round(Number(event.alpha));
+    const beta = Math.round(Number(event.beta));
+    const gamma = Math.round(Number(event.gamma));
     
     
 
     setTimeout(() => {
         displayData.innerHTML = getInnerHTML(alpha, beta, gamma);
-    }, 150);
+    }, 200);
     
     // `alpha ${alpha}\ngamma ${gamma}\nbeta ${beta}`
     console.log(event);
@@ -53,8 +53,8 @@ function handleOrientation(event) {
 }
 
 function getInnerHTML(alpha, beta, gamma){
-    document.getElementById("displayData1").style.transform = `rotate(${-alpha}deg)`
-    document.getElementById("displayData2").style.transform = `rotate(${alpha}deg)`
+    // document.getElementById("displayData1").style.transform = `rotate(${-alpha}deg)`
+    document.getElementById("displayData").style.transform = `rotate(${alpha}deg)`
 
     return `<div>
                 <span class="dataName">
