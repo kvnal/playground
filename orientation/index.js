@@ -20,7 +20,7 @@ function permission () {
     } else {
         alert( "DeviceMotionEvent is not defined" );
         window.addEventListener("deviceorientation", handleOrientation,true);
-                
+        
         removeBtnPermission();
         return;
 
@@ -43,14 +43,19 @@ function handleOrientation(event) {
     
     
 
-    displayData.innerHTML = getInnerHTML(alpha, beta, gamma);
+    setTimeout(() => {
+        displayData.innerHTML = getInnerHTML(alpha, beta, gamma);
+    }, 150);
     
-    `alpha ${alpha}\ngamma ${gamma}\nbeta ${beta}`
+    // `alpha ${alpha}\ngamma ${gamma}\nbeta ${beta}`
     console.log(event);
     // Do stuff with the new orientation data
 }
 
 function getInnerHTML(alpha, beta, gamma){
+    document.getElementById("displayData1").style.transform = `rotate(${-alpha}deg)`
+    document.getElementById("displayData2").style.transform = `rotate(${alpha}deg)`
+
     return `<div>
                 <span class="dataName">
                     Alpha
@@ -82,3 +87,6 @@ function getInnerHTML(alpha, beta, gamma){
 //   }
 
 // window.addEventListener("devicemotion", handleMotion, true);
+
+
+// update del
