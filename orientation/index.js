@@ -83,9 +83,9 @@ function handleMotion(event){
         
         displayDataAccG.innerHTML = createHTML(accelerationGX, accelerationGY, accelerationGZ)
         
-        displayDataGyro.innerHTML = createHTML(gyroX, gyroY, gyroZ)
+        displayDataGyro.innerText = `x: ${gyroX}\ny: ${gyroY}\nz: ${gyroZ}`
 
-    }, 150);
+    }, 500);
 
 }
 
