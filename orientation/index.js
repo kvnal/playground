@@ -12,7 +12,7 @@ function permission () {
             if ( response == "granted" ) {
                 window.addEventListener("deviceorientation", handleOrientation,true);
 
-                window.removeEventListener("devicemotion", handleMotion);
+                // window.addEventListener("devicemotion", handleMotion,true);
 
                 
                 removeBtnPermission();
@@ -26,7 +26,7 @@ function permission () {
     } else {
         alert( "DeviceMotionEvent is not defined" );
         window.addEventListener("deviceorientation", handleOrientation,true);
-        window.removeEventListener("devicemotion", handleMotion);
+        window.removeEventListener("devicemotion", handleMotion,true);
         
         removeBtnPermission();
         return;
@@ -50,9 +50,13 @@ function handleOrientation(event) {
     const beta = Math.round(Number(event.beta));
     const gamma = Math.round(Number(event.gamma));
     
+    const compHead = event.webkitCompassHeading;
+    const compAcc = event.webkitcompassaccuracy;
 
     setTimeout(() => {
         displayData.innerHTML = getInnerHTML(alpha, beta, gamma);
+
+        displayDataGyro.innerText = `compHead ${compHead}; compAcc ${compAcc}`
     }, 200);
     
     // `alpha ${alpha}\ngamma ${gamma}\nbeta ${beta}`
@@ -62,7 +66,7 @@ function handleOrientation(event) {
 
 
 function handleMotion(event){
-
+    console.log("ok");
     // including gravity
     let accelerationGX = event.accelerationIncludingGravity.x
     let accelerationGY = event.accelerationIncludingGravity.y
@@ -83,15 +87,15 @@ function handleMotion(event){
         
         displayDataAccG.innerHTML = createHTML(accelerationGX, accelerationGY, accelerationGZ)
         
-        displayDataGyro.innerText = `x: ${gyroX}\ny: ${gyroY}\nz: ${gyroZ}`
+        displayDataGyro.innerHTML = createHTML(gyroX, gyroY, gyroZ)
 
-    }, 500);
+    }, 5000);
 
 }
 
 function getInnerHTML(alpha, beta, gamma){
     // document.getElementById("displayData1").style.transform = `rotate(${-alpha}deg)`
-    document.getElementById("displayData").style.transform = `rotate(${alpha}deg)`
+    document.getElementById("displayData").style.transform = `rotate(${beta}deg)`
 
     return `<div>
                 <span class="dataName">
@@ -141,20 +145,30 @@ function createHTML(alpha, beta, gamma){
     </div>`
 }
 
-// function handleMotion(event) {
-//     // const absolute = event.absolute;
-//     // const alpha = event.alpha;
-//     // const beta = event.beta;
-//     // const gamma = event.gamma;
-    
-//     console.log(event);
-//     // Do stuff with the new orientation data
-//   }
-
-// window.addEventListener("devicemotion", handleMotion, true);
 
 
-// update del
+// function test(){
 
+//     if (
+//         DeviceMotionEvent &&
+//         typeof DeviceMotionEvent.requestPermission === "function"
+//     ) {
+//         DeviceMotionEvent.requestPermission();
+//     }
 
-
+//     if (is_running){
+//         window.removeEventListener("devicemotion", handleMotion);
+//         window.removeEventListener("deviceorientation", handleOrientation);
+//         demo_button.innerHTML = "Start demo";
+//         demo_button.classList.add('btn-success');
+//         demo_button.classList.remove('btn-danger');
+//         is_running = false;
+//       }else{
+//         window.addEventListener("devicemotion", handleMotion);
+//         window.addEventListener("deviceorientation", handleOrientation);
+//         document.getElementById("start_demo").innerHTML = "Stop demo";
+//         demo_button.classList.remove('btn-success');
+//         demo_button.classList.add('btn-danger');
+//         is_running = true;
+//       }
+// }
