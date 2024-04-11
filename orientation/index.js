@@ -1,4 +1,7 @@
 let displayData = document.getElementById('displayData');
+let displayDataGyro = document.getElementById('gyro');
+let displayDataAcc = document.getElementById('acc');
+let displayDataAccG = document.getElementById('accG');
 
 function permission () {
     if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( DeviceMotionEvent.requestPermission ) === "function" ) {
@@ -8,6 +11,9 @@ function permission () {
             // (optional) Do something after API prompt dismissed.
             if ( response == "granted" ) {
                 window.addEventListener("deviceorientation", handleOrientation,true);
+
+                window.removeEventListener("devicemotion", handleMotion);
+
                 
                 removeBtnPermission();
                 return;
@@ -20,29 +26,15 @@ function permission () {
     } else {
         alert( "DeviceMotionEvent is not defined" );
         window.addEventListener("deviceorientation", handleOrientation,true);
+        window.removeEventListener("devicemotion", handleMotion);
         
         removeBtnPermission();
         return;
 
     }
 
-    navigator.permissions.query({name:'gyroscope'}).then(function(result) {   
-        let gyroscope = new Gyroscope({ frequency: 60 });
-    
-    gyroscope.addEventListener("reading", (e) => {
-      console.log(`Angular velocity along the X-axis ${gyroscope.x}`);
-      console.log(`Angular velocity along the Y-axis ${gyroscope.y}`);
-      console.log(`Angular velocity along the Z-axis ${gyroscope.z}`);
-    
-      document.getElementById("gyro").innerText = `x: ${gyroscope.x}\ny: ${gyroscope.y}\nz:${gyroscope.z}`
-    
-    });
-    
-    gyroscope.start();
-    console.log(result.state);
-    
-    })
 }
+    
 
 function removeBtnPermission(){
     document.getElementById("btnPermission").remove()
@@ -59,15 +51,6 @@ function handleOrientation(event) {
     const gamma = Math.round(Number(event.gamma));
     
 
-    try{
-
-        document.getElementById("log").innerText = `log 
-        webkitCompassAccuracy ${ event.webkitCompassAccuracy }, webkitCompassHeading ${webkitCompassHeading}, abs ${absolute}
-        `
-    }catch(e){
-        document.getElementById("log").innerText = `log nope ${absolute}` 
-    }
-
     setTimeout(() => {
         displayData.innerHTML = getInnerHTML(alpha, beta, gamma);
     }, 200);
@@ -75,6 +58,35 @@ function handleOrientation(event) {
     // `alpha ${alpha}\ngamma ${gamma}\nbeta ${beta}`
     console.log(event);
     // Do stuff with the new orientation data
+}
+
+
+function handleMotion(event){
+
+    // including gravity
+    let accelerationGX = event.accelerationIncludingGravity.x
+    let accelerationGY = event.accelerationIncludingGravity.y
+    let accelerationGZ = event.accelerationIncludingGravity.z
+
+    let accelerationX = event.acceleration.x
+    let accelerationY = event.acceleration.y
+    let accelerationZ = event.acceleration.z
+    
+    // gyro
+    let gyroX = event.rotationRate.alpha
+    let gyroY = event.rotationRate.beta
+    let gyroZ = event.rotationRate.gamma
+    
+
+    setTimeout(() => {
+        displayDataAcc.innerHTML = createHTML(accelerationX, accelerationY, accelerationZ)
+        
+        displayDataAccG.innerHTML = createHTML(accelerationGX, accelerationGY, accelerationGZ)
+        
+        displayDataGyro.innerHTML = createHTML(gyroX, gyroY, gyroZ)
+
+    }, 150);
+
 }
 
 function getInnerHTML(alpha, beta, gamma){
@@ -96,6 +108,34 @@ function getInnerHTML(alpha, beta, gamma){
         <div>
         <span class="dataName">
             Gamma
+        </span>
+        <span class="data">${gamma}</span>
+    </div>`
+}
+
+
+function createHTML(alpha, beta, gamma){
+    // document.getElementById("displayData1").style.transform = `rotate(${-alpha}deg)`
+    // document.getElementById("displayData").style.transform = `rotate(${alpha}deg)`
+
+    alpha = Math.round(alpha)
+    beta = Math.round(beta)
+    gamma = Math.round(gamma)
+    return `<div>
+                <span class="dataName">
+                    X
+                </span>
+                <span class="data">${alpha}</span>
+            </div>
+            <div>
+            <span class="dataName">
+                Y
+            </span>
+            <span class="data">${beta}</span>
+        </div>
+        <div>
+        <span class="dataName">
+            Z
         </span>
         <span class="data">${gamma}</span>
     </div>`
